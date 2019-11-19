@@ -14,7 +14,6 @@ public class WriteActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         fingerView.init(metrics);
-        //paintView.normal();
 
     }
 
