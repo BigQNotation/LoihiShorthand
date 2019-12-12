@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class FingerView extends View {
 
+
     public static int BRUSH_SIZE = 20;
     public static final int DEFAULT_COLOR = Color.BLACK;
     public static final int BACKGROUND_COLOR = Color.WHITE;
@@ -114,6 +115,8 @@ public class FingerView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
+
+
 
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN :
