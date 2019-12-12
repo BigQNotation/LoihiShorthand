@@ -1,0 +1,6 @@
+#be sure to have these installed
+sudo apt-get install python3-tk 
+sudo apt-get install python3-matplotlib
+
+#basic run command Graphics are still an issue
+python3 DesktopApplication.py
