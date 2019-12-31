@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 public class FingerView extends View {
 
-
+    Network network = new Network();
     public static int BRUSH_SIZE = 20;
     public static final int DEFAULT_COLOR = Color.BLACK;
     public static final int BACKGROUND_COLOR = Color.WHITE;
@@ -120,10 +121,13 @@ public class FingerView extends View {
 
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN :
+
                 touchStart(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE :
+//                Log.i("onTouchEvent()", "x: " + x + " y: " + y);
+                network.send(x,y);
                 touchMove(x, y);
                 invalidate();
                 break;
