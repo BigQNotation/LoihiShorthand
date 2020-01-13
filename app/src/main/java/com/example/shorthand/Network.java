@@ -7,20 +7,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Network {
 
     private PrintWriter output;
     private BufferedReader input;
+    List<Float> list;
 
     public Network() {
         Thread Connect = new Thread(new Connect());
+        list = new ArrayList<>();
         Connect.start();
     }
 
 
     public void send(float x, float y) {
+        list.clear();
+        list.add(x);
+        list.add(y);
         Log.i("Network.send()", "x: " + x + " y: " + y);
         new Thread(new SendData(x)).start();
     }
@@ -46,7 +53,8 @@ public class Network {
         }
         @Override
         public void run() {
-            output.println(data);
+            Log.i("Network.sendData()", "x: " + list.get(0) + " y " + list.get(1));
+            output.println(list);
             output.flush();
         }
     }
