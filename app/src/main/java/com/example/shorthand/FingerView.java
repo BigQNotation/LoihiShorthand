@@ -134,6 +134,7 @@ public class FingerView extends View {
             case MotionEvent.ACTION_UP :
                 touchUp();
                 invalidate();
+                clear();
                 break;
         }
 
