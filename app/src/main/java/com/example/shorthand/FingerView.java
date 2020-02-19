@@ -32,6 +32,11 @@ public class FingerView extends View {
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+    private long timeStart;
+    private long timeStop;
+    private long timeDelta;
+    private double timeInSeconds;
+    private int count;
 
     public FingerView(Context context) {
         this(context, null);
@@ -60,6 +65,8 @@ public class FingerView extends View {
 
         currentColor = DEFAULT_COLOR;
         strokeWidth = BRUSH_SIZE;
+
+        count = 0;
     }
 
 
@@ -121,20 +128,26 @@ public class FingerView extends View {
 
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN :
-
                 touchStart(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE :
 //                Log.i("onTouchEvent()", "x: " + x + " y: " + y);
-                network.send(x,y);
+//                timeStart = System.nanoTime();
                 touchMove(x, y);
+//                timeStop = System.nanoTime();
+//                timeDelta = timeStop - timeStart;
+//                timeInSeconds = timeDelta / 1000.0;
+//                Log.i("onTouchEvent()", "timeStamp: " + System.currentTimeMillis() + " currentTimeMillis ");
+                count++;
+                network.send(x,y,count);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP :
                 touchUp();
                 invalidate();
                 clear();
+                count = 0;
                 break;
         }
 

@@ -24,11 +24,12 @@ public class Network {
     }
 
 
-    public void send(float x, float y) {
+    public void send(float x, float y, float timeStamp) {
         list.clear();
         list.add(x);
         list.add(y);
-        Log.i("Network.send()", "x: " + x + " y: " + y);
+        list.add(timeStamp);
+//        Log.i("Network.send()", "x: " + x + " y: " + y + " timeStamp: " + timeStamp);
         new Thread(new SendData(x)).start();
     }
 
@@ -53,7 +54,7 @@ public class Network {
         }
         @Override
         public void run() {
-            Log.i("Network.sendData()", "x: " + list.get(0) + " y " + list.get(1));
+//            Log.i("Network.sendData()", "x: " + list.get(0) + " y " + list.get(1));
             output.println(list);
             output.flush();
         }
