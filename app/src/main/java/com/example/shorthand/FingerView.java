@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,7 @@ public class FingerView extends View {
     private long timeStop;
     private long timeDelta;
     private double timeInSeconds;
-    private int count;
+    public int count;
 
     public FingerView(Context context) {
         this(context, null);
@@ -93,7 +94,7 @@ public class FingerView extends View {
         canvas.restore();
     }
 
-    private void touchStart(float x, float y) {
+    public void touchStart(float x, float y) {
         mPath = new Path();
         FingerPath fp = new FingerPath(currentColor, strokeWidth, mPath);
         paths.add(fp);
@@ -104,7 +105,7 @@ public class FingerView extends View {
         mY = y;
     }
 
-    private void touchMove(float x, float y) {
+    public void touchMove(float x, float y) {
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
 
@@ -115,16 +116,26 @@ public class FingerView extends View {
         }
     }
 
-    private void touchUp() {
+    public void touchUp() {
         mPath.lineTo(mX, mY);
     }
+
+
+
+
+
+
+    /*
+    // onTouchEvent has been commented out by Quinn.
+    // This function has been moved to WriteActivity.java
+    // in order to allow access/modification of other
+    // Views (DocumentView) when touch events
+    // from FingerView occur.
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-
-
 
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN :
@@ -144,14 +155,22 @@ public class FingerView extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP :
+                network.send(-1,-1,count);
                 touchUp();
                 invalidate();
                 clear();
                 count = 0;
+                network.getResponseString();
+                System.out.println("Response: " + network.response_string);
+
+
+
                 break;
         }
 
         return true;
     }
+
+     */
 }
 
