@@ -1,9 +1,13 @@
 #!/usr/bin/python3
 
-from socket import *
-import _thread
 import multiprocessing
-from multiprocessing import Pool, Process, Queue, Pipe
+from multiprocessing import Pipe, Pool, Process, Queue
+from socket import *
+from tkinter import *
+
+
+import matplotlib.pyplot as plt
+import _thread
 import DesktopApplication
 from DesktopApplication import DesktopApp
 
@@ -13,15 +17,15 @@ SERVER_PORT = 65000
 BUFFER_SIZE = 1024
 NUM_OF_CLIENTS = 10
 
-def openPipe(data):
-    serverConn, desktopConn = Pipe()
-    p = Process(target=DA.graphPipe, args=(desktopConn,data,))
-    p.start()
-    print(serverConn.recv())
+def UImain(UIConn):
+    DA.startUI()
+    deskApp = DA.getRoot()
+    DA.doAfter(UIConn)
+    deskApp.mainloop()
+    #plt.show()
 
-def dataReceived(data):
-    # Do something with data
-    # data example: [491.00717, 558.7286]
+
+def dataReceived(data, serverConn):
     sData = data.split(']\n[') 
     
     for x in range(len(sData)): 
@@ -29,15 +33,17 @@ def dataReceived(data):
         sData[x] = sData[x].replace('[', '') 
         sData[x] = sData[x].replace(']\n', '')
         sPair = sData[x].split(',') 
-        openPipe(sPair)
-
-    print("Data received: ", data)
+        serverConn.send(sPair)
+        #openPipe(sPair)
+    
+    serverConn.send("exit") 
+    #print("Data received: ", data)
     return
 
 def sendResponse(connectionSocket):
     connectionSocket.send('Data received.'.encode('utf-8'))
 
-def myThread(connectionSocket, addr):    
+def myThread(connectionSocket, addr, serverConn):    
     print('Client connected from IP/PORT {}'.format(addr))
     while True:
         try:
@@ -48,7 +54,7 @@ def myThread(connectionSocket, addr):
             return
 
         if request:
-            dataReceived(request)
+            dataReceived(request, serverConn)
             sendResponse(connectionSocket)
 
 # Returns current IP address assigned to local machine
@@ -62,12 +68,7 @@ def getLocalIPaddress():
         exit()
     return s.getsockname()[0]  
 
-def UImain():
-    DA.startUI()
-    deskApp = DA.getRoot()
-    deskApp.mainloop()
-
-def serverMain():
+def serverMain(serverConn):
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)    
     serverSocket.bind((getLocalIPaddress(), SERVER_PORT))
@@ -75,24 +76,19 @@ def serverMain():
     print('Loihi server running on IP/PORT {}'.format(serverSocket.getsockname()))
     while True:
         connectionSocket, addr = serverSocket.accept()
-        _thread.start_new_thread(myThread, (connectionSocket, addr))
+        _thread.start_new_thread(myThread, (connectionSocket, addr, serverConn))
 
-def main():    
-    #pool = Pool(processes=2)
-    UI = multiprocessing.Process(name='my_service', target=UImain)
-    serverM = multiprocessing.Process(name='my_service', target=serverMain)
+def main(): 
+    serverConn, UIConn = multiprocessing.Pipe()   
+
+    UI = multiprocessing.Process(name='UI', target=UImain, args=(UIConn,))
+    serverM = multiprocessing.Process(name='Server', target=serverMain, args=(serverConn,))    
     
     UI.start()
     serverM.start()
 
-    #serverSocket = socket(AF_INET, SOCK_STREAM)
-    #serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)    
-    #serverSocket.bind((getLocalIPaddress(), SERVER_PORT))
-    #serverSocket.listen(NUM_OF_CLIENTS)
-    #print('Loihi server running on IP/PORT {}'.format(serverSocket.getsockname()))
-    #while True:
-    #    connectionSocket, addr = serverSocket.accept()
-    #    _thread.start_new_thread(myThread, (connectionSocket, addr))
+    UI.join()
+    serverM.join()
 
 if __name__=="__main__":
      main()
