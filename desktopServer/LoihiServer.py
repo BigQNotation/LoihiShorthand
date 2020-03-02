@@ -17,6 +17,7 @@ SERVER_PORT = 65000
 BUFFER_SIZE = 1024
 NUM_OF_CLIENTS = 10
 
+#runs the UI Process
 def UImain(UIConn):
     DA.startUI()
     deskApp = DA.getRoot()
@@ -24,7 +25,7 @@ def UImain(UIConn):
     deskApp.mainloop()
     #plt.show()
 
-
+#Pipe end for the server 
 def dataReceived(data, serverConn):
     sData = data.split(']\n[') 
     
@@ -68,6 +69,7 @@ def getLocalIPaddress():
         exit()
     return s.getsockname()[0]  
 
+#server process is running here
 def serverMain(serverConn):
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)    
@@ -78,6 +80,7 @@ def serverMain(serverConn):
         connectionSocket, addr = serverSocket.accept()
         _thread.start_new_thread(myThread, (connectionSocket, addr, serverConn))
 
+#new Main function for splitting the processes to a server and desktop application
 def main(): 
     serverConn, UIConn = multiprocessing.Pipe()   
 

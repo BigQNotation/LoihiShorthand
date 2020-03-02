@@ -7,6 +7,7 @@ from queue import Queue
 
 class DesktopApp:
     
+    #initates the class
     def __init__(self):
         super().__init__()
         self.root = Tk()
@@ -15,7 +16,7 @@ class DesktopApp:
         self.xPoint, self.yPoint = [], []
         self.fig, self.myPlt = plt.subplots()
         
-        
+    #Setup the window to specific size
     def setupWindow(self):
         self.frameWidth = 900
         self.frameHeight = 900
@@ -25,6 +26,7 @@ class DesktopApp:
         self.root.resizable(0,0)
         self.graphSetup()
 
+    #Sets up the baiscs for the graph
     def graphSetup(self):
         print("graphSetup")
         #self.myPlt.show()
@@ -33,6 +35,7 @@ class DesktopApp:
         plt.ylim(100, 1200)
         
 
+    #Takes the incoming information from the pip and adds it to the internal queue = q 
     def graphPipe(self, conn):
         print("Graph Pipe")
         while(1):
@@ -44,6 +47,7 @@ class DesktopApp:
         self.graphUpdate()
         self.doAfter(conn)
 
+    #Processes the information from the q and adds it to the graphing data sets x and y
     def graphUpdate(self):
         print("graphUpdate")
 
@@ -56,14 +60,11 @@ class DesktopApp:
             self.yPoint.append(newData[1])
             if (self.q.empty()):
                 print("empty q")
-            
-
         self.graphStuff()
 
+    #Graphs the informations in the data sets x and y, shows them in a plot.  
     def graphStuff(self):
-        #
         plt.clf()
-        
         plt.scatter(self.xPoint, self.yPoint, s=50, marker='x') #zorder, 
         plt.show()
         plt.pause(0.000001)
@@ -72,14 +73,18 @@ class DesktopApp:
         #self.myPlt.scatter(self.xPoint, self.yPoint)
         #plt.show()
 
+    #Just runs the setupWindows() file.
     def startUI(self):
         self.setupWindow()
 
+    #Returns the root so the mainloop run in the server file.
     def getRoot(self):
         return self.root    
 
+    #returns a q to the server
     def getQ(self):
         return self.q    
 
+    #nessary for the graphPipe to trigger after the mainloop() for the desktop application.
     def doAfter(self, conn):
         self.root.after(self.graphTimer,self.graphPipe,(conn))
