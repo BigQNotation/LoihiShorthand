@@ -5,30 +5,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.shorthand.FingerView
-        android:id="@+id/paintView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="313dp"
-            android:layout_height="111dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginLeft="40dp"
-            android:gravity="center"
-            android:text="Please draw on screen"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.155"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.003" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <TextView
+                    android:id="@+id/DocumentView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="Document View: "
+                    android:textSize="24sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="center"
+                    android:text="Please draw on screen"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <com.example.shorthand.FingerView
+                    android:id="@+id/paintView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </TableRow>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </RelativeLayout>
