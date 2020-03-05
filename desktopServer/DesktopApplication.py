@@ -20,7 +20,7 @@ class DesktopApp:
     def setupWindow(self):
         self.frameWidth = 900
         self.frameHeight = 900
-        self.root.title("Intel Loihi Shorthane")
+        self.root.title("Intel Loihi Shorthand")
         self.root.minsize(self.frameWidth, self.frameHeight)
         self.root.maxsize(self.frameWidth, self.frameHeight)
         self.root.resizable(0,0)
@@ -41,9 +41,10 @@ class DesktopApp:
         while(1):
             msg = conn.recv()
             print("openPipe: ", msg)
-            self.q.put(msg)
             if(msg == "exit"): 
                 break
+            else:
+                self.q.put(msg)
         self.graphUpdate()
         self.doAfter(conn)
 
@@ -56,8 +57,8 @@ class DesktopApp:
             print("newData: ", newData)
             print("self.xPoint: ", len(self.xPoint))
             print("self.yPoint: ", len(self.yPoint))
-            self.xPoint.append(newData[0])
-            self.yPoint.append(newData[1])
+            self.xPoint.append(float(newData[0]))
+            self.yPoint.append(float(newData[1]))
             if (self.q.empty()):
                 print("empty q")
         self.graphStuff()
@@ -65,7 +66,8 @@ class DesktopApp:
     #Graphs the informations in the data sets x and y, shows them in a plot.  
     def graphStuff(self):
         plt.clf()
-        plt.scatter(self.xPoint, self.yPoint, s=50, marker='x') #zorder, 
+        plt.scatter(self.xPoint, self.yPoint, s=50, marker='o') 
+        plt.plot(self.xPoint, self.yPoint) #plot a line graph
         plt.show()
         plt.pause(0.000001)
 

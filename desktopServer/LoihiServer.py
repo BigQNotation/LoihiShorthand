@@ -23,7 +23,6 @@ def UImain(UIConn):
     deskApp = DA.getRoot()
     DA.doAfter(UIConn)
     deskApp.mainloop()
-    #plt.show()
 
 #Pipe end for the server 
 def dataReceived(data, serverConn):
