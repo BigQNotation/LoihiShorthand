@@ -1,23 +1,51 @@
 #!/usr/bin/python3
 
+import multiprocessing
+from multiprocessing import Pipe, Pool, Process, Queue
 from socket import *
+from tkinter import *
+
+
+import matplotlib.pyplot as plt
 import _thread
+import DesktopApplication
+from DesktopApplication import DesktopApp
+
+DA = DesktopApp()
 
 SERVER_PORT = 65000
 BUFFER_SIZE = 1024
 NUM_OF_CLIENTS = 10
 
-def dataReceived(data):
-    # Do something with data
-    print("Data received: ", data)
-    return
+#runs the UI Process
+def UImain(UIConn):
+    DA.startUI()
+    deskApp = DA.getRoot()
+    DA.doAfter(UIConn)
+    deskApp.mainloop()
+    #plt.show()
 
+#Pipe end for the server 
+def dataReceived(data, serverConn):
+    sData = data.split(']\n[') 
+    
+    for x in range(len(sData)): 
+        #replace used to turn string into a number.
+        sData[x] = sData[x].replace('[', '') 
+        sData[x] = sData[x].replace(']\n', '')
+        sPair = sData[x].split(',') 
+        serverConn.send(sPair)
+        #openPipe(sPair)
+    
+    serverConn.send("exit") 
+    #print("Data received: ", data)
+    return
 
 def sendResponse(connectionSocket):
     connectionSocket.send('Data received.\n'.encode('utf-8'))
 
 
-def myThread(connectionSocket, addr):
+def myThread(connectionSocket, addr, serverConn):    
 
     print('Client connected from IP/PORT {}'.format(addr))
     while True:
@@ -29,9 +57,8 @@ def myThread(connectionSocket, addr):
             return
 
         if request:
-            dataReceived(request)
+            dataReceived(request, serverConn)
             sendResponse(connectionSocket)
-
 
 # Returns current IP address assigned to local machine
 def getLocalIPaddress():
@@ -45,7 +72,8 @@ def getLocalIPaddress():
     return s.getsockname()[0]
 
 
-def main():
+#server process is running here
+def serverMain(serverConn):
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     serverSocket.bind((getLocalIPaddress(), SERVER_PORT))
@@ -53,8 +81,20 @@ def main():
     print('Loihi server running on IP/PORT {}'.format(serverSocket.getsockname()))
     while True:
         connectionSocket, addr = serverSocket.accept()
-        _thread.start_new_thread(myThread, (connectionSocket, addr))
+        _thread.start_new_thread(myThread, (connectionSocket, addr, serverConn))
 
+#new Main function for splitting the processes to a server and desktop application
+def main(): 
+    serverConn, UIConn = multiprocessing.Pipe()   
+
+    UI = multiprocessing.Process(name='UI', target=UImain, args=(UIConn,))
+    serverM = multiprocessing.Process(name='Server', target=serverMain, args=(serverConn,))    
+    
+    UI.start()
+    serverM.start()
+
+    UI.join()
+    serverM.join()
 
 if __name__=="__main__":
      main()
