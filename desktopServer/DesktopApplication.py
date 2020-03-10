@@ -5,11 +5,23 @@ import matplotlib.pyplot as plt
 from collections import deque
 from queue import Queue
 
+import csv
+import os
+
 class DesktopApp:
     
     #initates the class
     def __init__(self):
         super().__init__()
+		#create new folder
+		now = datetime.now()
+
+		dt_string = now.strftime("%d_%m_%Y__%S_%M_%H")
+		os.makedirs(dt_string)
+		self.csvfile = open(dt_string+'/data.csv', w)
+		self.csvWriter = csv.writer(csvfile)
+		self.csvWriter.writerow([dt_string, "wanted meaning here"]) 
+		self.csvWriter.writerow(["x", "y"]) 
         self.root = Tk()
         self.graphTimer = 20
         self.q = Queue(maxsize=10000)
@@ -60,6 +72,7 @@ class DesktopApp:
             #print("self.yPoint: ", len(self.yPoint))
             if(float(newData[0]) != -1.0):
                 print("New Data Added")
+				self.csvWriter.writerow([float(newData[0]), float(newData[1])])
                 self.xPoint.append(float(newData[0]))
                 self.yPoint.append(float(newData[1]))
             else:
@@ -69,7 +82,8 @@ class DesktopApp:
     def saveGraph(self):
         print("saving graph")
         #self.fig = plt.figure()
-        self.fig.savefig('plot.png')
+        self.fig.savefig(dt_string+'/plot.png')
+		self.csvfile.close()
 
 
     #Graphs the informations in the data sets x and y, shows them in a plot.  
