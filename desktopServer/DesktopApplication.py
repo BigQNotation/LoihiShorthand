@@ -44,6 +44,9 @@ class DesktopApp:
     # Takes the incoming information from the pip and adds it to the internal queue = q
     def graphPipe(self, conn):
         print("Graph Pipe")
+        msg = conn.recv()
+        self.xPoint.append(float(msg[0]))
+        self.yPoint.append(float(msg[1]))
         now = datetime.datetime.now()
         dt_string = now.strftime("%d_%m_%Y__%S_%M_%H")
         os.makedirs("graphs", exist_ok=True)
@@ -55,19 +58,17 @@ class DesktopApp:
         csvWriter = csv.writer(csvfile)
         csvwriter = csvWriter
         while 1:
-            msg = conn.recv()
             print("openPipe: ", msg)
-            self.graphStuff()
             if msg[0] == '-1.0':
                 self.saveGraph()
                 break
-            else:
-                print(msg)
-                print(" is added to queue\n")
-                self.xPoint.append(float(msg[0]))
-                self.yPoint.append(float(msg[1]))
-                plt.draw()
+            self.graphStuff()
+            print(msg)
+            print(" is added to queue\n")
+            self.xPoint.append(float(msg[0]))
+            self.yPoint.append(float(msg[1]))
             csvwriter.writerow([float(msg[0]), float(msg[1])])
+            msg = conn.recv()
         self.doAfter(conn)
 
     # Processes the information from the q and adds it to the graphing data sets x and y
@@ -80,12 +81,11 @@ class DesktopApp:
         self.fig.savefig(saveloc)
         self.csvfile.close()
         self.xPoint, self.yPoint = [], []
+        plt.clf()
 
     # Graphs the informations in the data sets x and y, shows them in a plot.
     def graphStuff(self):
         self.fig = plt.gcf()
-        plt.clf()
-        plt.scatter(self.xPoint, self.yPoint, s=50, marker='o')
         plt.plot(self.xPoint, self.yPoint)  # plot a line graph
         plt.show()
         plt.pause(0.000001)
