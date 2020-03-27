@@ -79,6 +79,7 @@ class DesktopApp:
         saveloc = self.gph_string + '/plot.png'
         self.fig.savefig(saveloc)
         self.csvfile.close()
+        self.xPoint, self.yPoint = [], []
 
     # Graphs the informations in the data sets x and y, shows them in a plot.
     def graphStuff(self):
