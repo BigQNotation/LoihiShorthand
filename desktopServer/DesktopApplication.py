@@ -46,9 +46,11 @@ class DesktopApp:
         print("Graph Pipe")
         now = datetime.datetime.now()
         dt_string = now.strftime("%d_%m_%Y__%S_%M_%H")
-        self.dt_string = dt_string
-        os.makedirs(dt_string, exist_ok=True)
-        csvfile = open(dt_string + '/data.csv', 'a')
+        os.makedirs("graphs", exist_ok=True)
+        gph_string = "graphs/" + dt_string
+        self.gph_string = gph_string
+        os.makedirs(gph_string, exist_ok=True)
+        csvfile = open(gph_string + '/data.csv', 'a')
         self.csvfile = csvfile
         csvWriter = csv.writer(csvfile)
         csvwriter = csvWriter
@@ -74,7 +76,7 @@ class DesktopApp:
     def saveGraph(self):
         print("saving graph")
         # self.fig = plt.figure()
-        saveloc = self.dt_string + '/plot.png'
+        saveloc = self.gph_string + '/plot.png'
         self.fig.savefig(saveloc)
         self.csvfile.close()
 
