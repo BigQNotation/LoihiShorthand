@@ -24,20 +24,19 @@ def UImain(UIConn):
     DA.doAfter(UIConn)
     deskApp.mainloop()
 
-#Pipe end for the server
+#Pipe end for the server 
 def dataReceived(data, serverConn):
-    sData = data.split(']\n[')
-
-    for x in range(len(sData)):
+    sData = data.split(']\n[') 
+    
+    for x in range(len(sData)): 
         #replace used to turn string into a number.
-        sData[x] = sData[x].replace('[', '')
+        sData[x] = sData[x].replace('[', '') 
         sData[x] = sData[x].replace(']\n', '')
-        sPair = sData[x].split(',')
+        sPair = sData[x].split(',') 
         serverConn.send(sPair)
-
         #openPipe(sPair)
-
-    serverConn.send("exit")
+    
+    #serverConn.send("exit")
     #print("Data received: ", data)
     return
 
@@ -45,7 +44,7 @@ def sendResponse(connectionSocket):
     connectionSocket.send('Data received.\n'.encode('utf-8'))
 
 
-def myThread(connectionSocket, addr, serverConn):
+def myThread(connectionSocket, addr, serverConn):    
 
     print('Client connected from IP/PORT {}'.format(addr))
     while True:
@@ -58,17 +57,7 @@ def myThread(connectionSocket, addr, serverConn):
 
         if request:
             dataReceived(request, serverConn)
-
-            # Send a response if "-1.0" string is received from phone client,
-            # indicating that gesture is finished / "touch up" event occured
-            sData = request.split(']\n[')
-            for x in range(len(sData)):
-                sData[x] = sData[x].replace('[', '')
-                sData[x] = sData[x].replace(']\n', '')
-                sPair = sData[x].split(',')
-                if (sPair[0] == "-1.0"):
-                    sendResponse(connectionSocket)
-
+            sendResponse(connectionSocket)
 
 # Returns current IP address assigned to local machine
 def getLocalIPaddress():
@@ -94,12 +83,12 @@ def serverMain(serverConn):
         _thread.start_new_thread(myThread, (connectionSocket, addr, serverConn))
 
 #new Main function for splitting the processes to a server and desktop application
-def main():
-    serverConn, UIConn = multiprocessing.Pipe()
+def main(): 
+    serverConn, UIConn = multiprocessing.Pipe()   
 
     UI = multiprocessing.Process(name='UI', target=UImain, args=(UIConn,))
-    serverM = multiprocessing.Process(name='Server', target=serverMain, args=(serverConn,))
-
+    serverM = multiprocessing.Process(name='Server', target=serverMain, args=(serverConn,))    
+    
     UI.start()
     serverM.start()
 

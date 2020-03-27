@@ -16,16 +16,6 @@ class DesktopApp:
     def __init__(self):
         super().__init__()
         # create new folder
-        now = datetime.datetime.now()
-
-        dt_string = now.strftime("%d_%m_%Y__%S_%M_%H")
-        os.makedirs(dt_string, exist_ok=True)
-        csvfile = open(dt_string + '/data.csv', 'w')
-        self.csvfile = csvfile
-        csvWriter = csv.writer(csvfile)
-        self.csvWriter = csvWriter
-        self.csvWriter.writerow([dt_string, "wanted meaning here"])
-        self.csvWriter.writerow(["x", "y"])
         self.root = Tk()
         self.graphTimer = 20
         self.q = Queue(maxsize=10000)
@@ -54,39 +44,38 @@ class DesktopApp:
     # Takes the incoming information from the pip and adds it to the internal queue = q
     def graphPipe(self, conn):
         print("Graph Pipe")
+        now = datetime.datetime.now()
+        dt_string = now.strftime("%d_%m_%Y__%S_%M_%H")
+        self.dt_string = dt_string
+        os.makedirs(dt_string, exist_ok=True)
+        csvfile = open(dt_string + '/data.csv', 'a')
+        self.csvfile = csvfile
+        csvWriter = csv.writer(csvfile)
+        csvwriter = csvWriter
         while 1:
             msg = conn.recv()
             print("openPipe: ", msg)
-            if msg == "exit":
+            self.graphStuff()
+            if msg[0] == '-1.0':
+                self.saveGraph()
                 break
             else:
-                print(msg + "is added to queue\n")
-                self.q.put(msg)
-        self.graphUpdate()
+                print(msg)
+                print(" is added to queue\n")
+                self.xPoint.append(float(msg[0]))
+                self.yPoint.append(float(msg[1]))
+                plt.draw()
+            csvwriter.writerow([float(msg[0]), float(msg[1])])
         self.doAfter(conn)
 
     # Processes the information from the q and adds it to the graphing data sets x and y
-    def graphUpdate(self):
-        print("graphUpdate")
 
-        while self.q.empty() == False:
-            newData = self.q.get()
-            # print("newData: ", newData)
-            # print("self.xPoint: ", len(self.xPoint))
-            # print("self.yPoint: ", len(self.yPoint))
-            if float(newData[0]) != -1.0:
-                print("New Data Added")
-                self.csvWriter.writerow([float(newData[0]), float(newData[1])])
-                self.xPoint.append(float(newData[0]))
-                self.yPoint.append(float(newData[1]))
-            else:
-                self.saveGraph()
-        self.graphStuff()
 
     def saveGraph(self):
         print("saving graph")
         # self.fig = plt.figure()
-        self.fig.savefig(dt_string + '/plot.png')
+        saveloc = self.dt_string + '/plot.png'
+        self.fig.savefig(saveloc)
         self.csvfile.close()
 
     # Graphs the informations in the data sets x and y, shows them in a plot.
