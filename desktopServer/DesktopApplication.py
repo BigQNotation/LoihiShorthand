@@ -42,8 +42,11 @@ class DesktopApp:
         print("graphSetup")
         # self.myPlt.show()
         plt.ion()
-        plt.xlim(100, 1200)
-        plt.ylim(100, 1200)
+        plt.axis('off')
+        #plt.axis('equal')
+        #plt.gca().set_aspect('equal', adjustable='box')
+        #plt.xlim(00, 3000)
+        #plt.ylim(00, 3000)
 
     # Takes the incoming information from the pip and adds it to the internal queue = q
     def graphPipe(self, conn):
@@ -117,6 +120,7 @@ class DesktopApp:
     # Graphs the informations in the data sets x and y, shows them in a plot.
     def graphStuff(self):
         self.fig = plt.gcf()
+        plt.axis('off')
         plt.plot(self.xPoint, self.yPoint, '-k', linewidth=5)  # plot a line graph
         plt.show()
         plt.pause(0.000001)
