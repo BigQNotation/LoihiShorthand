@@ -43,6 +43,7 @@ class DesktopApp:
         # self.myPlt.show()
         plt.ion()
         plt.axis('off')
+        plt.axis('equal')
         #plt.axis('equal')
         #plt.gca().set_aspect('equal', adjustable='box')
         #plt.xlim(00, 3000)
@@ -121,6 +122,7 @@ class DesktopApp:
     def graphStuff(self):
         self.fig = plt.gcf()
         plt.axis('off')
+        plt.axis('equal')
         plt.plot(self.xPoint, self.yPoint, '-k', linewidth=5)  # plot a line graph
         plt.show()
         plt.pause(0.000001)
