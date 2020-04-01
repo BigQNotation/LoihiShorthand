@@ -48,6 +48,9 @@ class DesktopApp:
     def graphPipe(self, conn):
         print("Graph Pipe")
         msg = conn.recv()
+        if msg[0] == '-1.0':
+            self.doAfter(conn)
+            return
         self.xPoint.append(float(msg[0]))
         self.yPoint.append(float(msg[1]))
         now = datetime.datetime.now()
