@@ -38,6 +38,7 @@ public class FingerView extends View {
     private long timeDelta;
     private double timeInSeconds;
     public int count;
+    public int y_max;
 
     public FingerView(Context context) {
         this(context, null);
@@ -60,6 +61,8 @@ public class FingerView extends View {
     public void init(DisplayMetrics metrics) {
         int height = metrics.heightPixels;
         int width = metrics.widthPixels;
+
+        y_max = height;
 
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);

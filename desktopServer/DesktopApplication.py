@@ -86,7 +86,7 @@ class DesktopApp:
     # Graphs the informations in the data sets x and y, shows them in a plot.
     def graphStuff(self):
         self.fig = plt.gcf()
-        plt.plot(self.xPoint, self.yPoint)  # plot a line graph
+        plt.plot(self.xPoint, self.yPoint, '-k', linewidth=5)  # plot a line graph
         plt.show()
         plt.pause(0.000001)
 

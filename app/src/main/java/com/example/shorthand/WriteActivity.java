@@ -1,6 +1,8 @@
 package com.example.shorthand;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,6 +20,7 @@ public class WriteActivity extends AppCompatActivity {
     FingerView fingerView;
     private BufferedReader input;
 
+    @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -45,7 +48,7 @@ public class WriteActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_MOVE :
                         fingerView.touchMove(x, y);
                         fingerView.count++;
-                        fingerView.network.send(x,y,fingerView.count);
+                        fingerView.network.send(x,fingerView.y_max - y,fingerView.count);
                         fingerView.invalidate();
                         break;
                     case MotionEvent.ACTION_UP :
