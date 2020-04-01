@@ -8,7 +8,9 @@ import datetime
 
 import csv
 import os
-
+from tempfile import TemporaryFile
+import glob
+import cv2
 
 class DesktopApp:
 
@@ -21,6 +23,7 @@ class DesktopApp:
         self.q = Queue(maxsize=10000)
         self.xPoint, self.yPoint = [], []
         self.fig = plt.figure()
+        self.trainingFileCount = 0;
         # self.myPlt = plt.subplots()
 
     # Setup the window to specific size
@@ -76,11 +79,31 @@ class DesktopApp:
 
     def saveGraph(self):
         print("saving graph")
+
+        # save graph to training location
+        os.makedirs("training", exist_ok=True)
+        training_directory = "training/"
+        training_saveloc = training_directory + '/plot' + str(self.trainingFileCount) + '.png'
+        self.fig.savefig(training_saveloc)
+        self.trainingFileCount = self.trainingFileCount + 1
+
         # self.fig = plt.figure()
         saveloc = self.gph_string + '/plot.png'
         self.fig.savefig(saveloc)
         self.csvfile.close()
         self.xPoint, self.yPoint = [], []
+
+        # save image and label to numpy binary files
+        image_array = []
+        label_array = []
+        files = glob.glob(training_directory + '/*.PNG')
+        for myFile in files:
+            image = cv2.imread(myFile)
+            image_array.append(image)
+            label_array.append(0) # manually change label value to match gesture
+        np.save(training_directory + '/imageTrain',image_array)
+        np.save(training_directory + '/labelTrain',label_array)
+
         plt.clf()
 
     # Graphs the informations in the data sets x and y, shows them in a plot.
