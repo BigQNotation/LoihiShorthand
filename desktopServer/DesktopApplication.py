@@ -24,6 +24,7 @@ class DesktopApp:
         self.xPoint, self.yPoint = [], []
         self.fig = plt.figure()
         self.trainingFileCount = 0;
+        self.label_swapper = 0
         # self.myPlt = plt.subplots()
 
     # Setup the window to specific size
@@ -86,7 +87,10 @@ class DesktopApp:
         # save graph to training location
         os.makedirs("training", exist_ok=True)
         training_directory = "training/"
-        training_saveloc = training_directory + '/plot' + str(self.trainingFileCount) + '.png'
+        if (self.trainingFileCount < 10):
+            training_saveloc = training_directory + '/plot0' + str(self.trainingFileCount) + '.png'
+        if (self.trainingFileCount >= 10):
+            training_saveloc = training_directory + '/plot' + str(self.trainingFileCount) + '.png'
         self.fig.savefig(training_saveloc)
         self.trainingFileCount = self.trainingFileCount + 1
 
@@ -103,7 +107,8 @@ class DesktopApp:
         for myFile in files:
             image = cv2.imread(myFile)
             image_array.append(image)
-            label_array.append(0) # manually change label value to match gesture
+            label_array.append(self.label_swapper % 5) # change mod to match amount of gestures to be trained
+            self.label_swapper = self.label_swapper + 1
         np.save(training_directory + '/imageTrain',image_array)
         np.save(training_directory + '/labelTrain',label_array)
 
