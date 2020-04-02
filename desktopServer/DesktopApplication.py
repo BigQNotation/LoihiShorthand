@@ -112,7 +112,8 @@ class DesktopApp:
             image = cv2.imread(myFile)
             dim = 20,20
             resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-            image_array.append(resized)
+            resized_gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+            image_array.append(resized_gray)
             label_array.append(self.label_swapper % 3) # change mod to match amount of gestures to be trained
             self.label_swapper = self.label_swapper + 1
         np.save(training_directory + '/imageTrain',image_array)
