@@ -110,8 +110,10 @@ class DesktopApp:
         files = glob.glob(training_directory + '/*.PNG')
         for myFile in files:
             image = cv2.imread(myFile)
-            image_array.append(image)
-            label_array.append(self.label_swapper % 5) # change mod to match amount of gestures to be trained
+            dim = 20,20
+            resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+            image_array.append(resized)
+            label_array.append(self.label_swapper % 3) # change mod to match amount of gestures to be trained
             self.label_swapper = self.label_swapper + 1
         np.save(training_directory + '/imageTrain',image_array)
         np.save(training_directory + '/labelTrain',label_array)
