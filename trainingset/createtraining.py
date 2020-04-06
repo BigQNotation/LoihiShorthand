@@ -23,7 +23,7 @@ for myFile in files:
     resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
     resized_gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     image_array.append(resized_gray)
-    label_array.append(label_swapper % 3) # change mod to match amount of gestures to be trained
+    label_array.append(label_swapper % 2) # change mod to match amount of gestures to be trained
     label_swapper = label_swapper + 1
 np.save('./imageTrain',image_array)
 np.save('./labelTrain',label_array)
