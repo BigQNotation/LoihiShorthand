@@ -22,16 +22,10 @@ class DesktopApp:
         self.graphTimer = 20
         self.q = Queue(maxsize=10000)
         self.xPoint, self.yPoint = [], []
-        #self.fig = plt.figure()
+        self.fig = plt.figure()
         self.trainingFileCount = 0;
         self.label_swapper = 0
-
-        # used to create grayscale image array
-        self.grayscale_image_array = []
-        self.grayscale_image_array.append([])
-        self.grayscale_image_array.append([])
-        self.gia_fig = plt.figure()
-        self.array_label_swapper = 0
+        # self.myPlt = plt.subplots()
 
     # Setup the window to specific size
     def setupWindow(self):
@@ -85,11 +79,6 @@ class DesktopApp:
             self.xPoint.append(float(msg[0]))
             self.yPoint.append(float(msg[1]))
             csvwriter.writerow([float(msg[0]), float(msg[1])])
-
-            # gray scale image array implementation
-            self.grayscale_image_array[0].append(float(msg[0]))
-            self.grayscale_image_array[1].append(float(msg[1]))
-
             msg = conn.recv()
         self.doAfter(conn)
 
@@ -99,7 +88,6 @@ class DesktopApp:
     def saveGraph(self):
         print("saving graph")
 
-        '''
         # save graph to training location
         os.makedirs("training", exist_ok=True)
         training_directory = "training/"
@@ -109,34 +97,14 @@ class DesktopApp:
             training_saveloc = training_directory + '/plot' + str(self.trainingFileCount) + '.png'
         self.fig.savefig(training_saveloc)
         self.trainingFileCount = self.trainingFileCount + 1
-        '''
-
-        # save grayscale image array to training location
-        os.makedirs("arraytraining", exist_ok=True)
-        array_training_directory = "arraytraining/"
-        if (self.trainingFileCount < 10):
-            training_saveloc = array_training_directory + '/array0' + str(self.trainingFileCount) + '.png'
-        if (self.trainingFileCount >= 10):
-            training_saveloc = array_training_directory + '/array' + str(self.trainingFileCount) + '.png'
-        self.gia_fig.savefig(training_saveloc)
-        self.trainingFileCount = self.trainingFileCount + 1
-
-        self.grayscale_image_array = []
-        self.grayscale_image_array.append([])
-        self.grayscale_image_array.append([])
-
-
 
         # self.fig = plt.figure()
-        '''
         saveloc = self.gph_string + '/plot.png'
         self.fig.savefig(saveloc)
         self.csvfile.close()
         self.xPoint, self.yPoint = [], []
-        '''
 
         # save image and label to numpy binary files
-        '''
         image_array = []
         label_array = []
         files = glob.glob(training_directory + '/*.PNG')
@@ -150,46 +118,17 @@ class DesktopApp:
             self.label_swapper = self.label_swapper + 1
         np.save(training_directory + '/imageTrain',image_array)
         np.save(training_directory + '/labelTrain',label_array)
-        '''
-
-        # save grayscale image array and label to numpy binary files
-        image_array = []
-        label_array = []
-        files = glob.glob(array_training_directory + '/*.PNG')
-        for myFile in files:
-            image = cv2.imread(myFile)
-            image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            image_array.append(image_gray)
-            label_array.append(self.array_label_swapper % 3) # change mod to match amount of gestures to be trained
-            self.array_label_swapper = self.array_label_swapper + 1
-        np.save(array_training_directory + '/imageTrain',image_array)
-        np.save(array_training_directory + '/labelTrain',label_array)
-
 
         plt.clf()
 
     # Graphs the informations in the data sets x and y, shows them in a plot.
     def graphStuff(self):
-        '''
         self.fig = plt.gcf()
         plt.axis('off')
         plt.axis('equal')
         plt.plot(self.xPoint, self.yPoint, '-k', linewidth=5)  # plot a line graph
         plt.show()
         plt.pause(0.000001)
-        '''
-
-        self.gia_fig = plt.gcf()
-        plt.axis('off')
-        #plt.axis('equal')
-        plt.imshow(self.grayscale_image_array, cmap="gray")
-        plt.show()
-        plt.pause(0.000001)
-
-
-
-
-
 
         # Stops at show ==============================
         # self.myPlt.scatter(self.xPoint, self.yPoint)
