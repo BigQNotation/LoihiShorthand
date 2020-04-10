@@ -42,10 +42,12 @@ public class FingerView extends View {
 
     public FingerView(Context context) {
         this(context, null);
+        System.out.println("FingerView(context)\n");
     }
 
     public FingerView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        System.out.println("FingerView(context,attrs)\n");
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
@@ -59,6 +61,8 @@ public class FingerView extends View {
     }
 
     public void init(DisplayMetrics metrics) {
+
+        System.out.println("init(metrics)\n");
         int height = metrics.heightPixels;
         int width = metrics.widthPixels;
 
@@ -75,6 +79,8 @@ public class FingerView extends View {
 
 
     public void clear() {
+
+        System.out.println("clear()\n");
         backgroundColor = BACKGROUND_COLOR;
         paths.clear();
         invalidate();
@@ -82,7 +88,9 @@ public class FingerView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        System.out.println("onDraw(canvas)\n");
         canvas.save();
+
         mCanvas.drawColor(backgroundColor);
 
         for (FingerPath fp : paths) {
@@ -90,14 +98,16 @@ public class FingerView extends View {
             mPaint.setStrokeWidth(fp.strokeWidth);
             mPaint.setMaskFilter(null);
             mCanvas.drawPath(fp.path, mPaint);
-
         }
 
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+
         canvas.restore();
     }
 
     public void touchStart(float x, float y) {
+
+        System.out.println("touchStart(x,y)\n");
         mPath = new Path();
         FingerPath fp = new FingerPath(currentColor, strokeWidth, mPath);
         paths.add(fp);
@@ -109,6 +119,8 @@ public class FingerView extends View {
     }
 
     public void touchMove(float x, float y) {
+
+        System.out.println("touchMove(x,y)\n");
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
 
@@ -120,6 +132,7 @@ public class FingerView extends View {
     }
 
     public void touchUp() {
+        System.out.println("touchUp()\n");
         mPath.lineTo(mX, mY);
     }
 

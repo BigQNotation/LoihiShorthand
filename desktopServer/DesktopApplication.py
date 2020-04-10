@@ -10,7 +10,7 @@ import csv
 import os
 from tempfile import TemporaryFile
 import glob
-import cv2
+#import cv2
 
 class DesktopApp:
 
