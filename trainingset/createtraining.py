@@ -16,7 +16,8 @@ import cv2
 label_swapper = 0
 image_array = []
 label_array = []
-files = glob.glob('./*.PNG')
+#files = glob.glob('./*.PNG')
+files = glob.glob('./*.png')
 for myFile in files:
     image = cv2.imread(myFile)
     dim = 20,20
