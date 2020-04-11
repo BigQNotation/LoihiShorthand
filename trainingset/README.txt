@@ -1,0 +1,1 @@
+This folder contains all training data sets, many of which do not work with SLIC.
