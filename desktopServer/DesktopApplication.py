@@ -110,6 +110,31 @@ class DesktopApp:
         self.fig.savefig(training_saveloc)
         self.trainingFileCount = self.trainingFileCount + 1
         '''
+        # modify grayscale image array to be offset
+        # by its height. this operation is done
+        # to make gestures similar grayscale values,
+        # regardless of the area on the phone they're drawn.
+
+        # find min x coordinate value
+        x_coord_min = 100000
+        for x_coord in self.grayscale_image_array[0]:
+            if (x_coord < x_coord_min):
+                x_coord_min = x_coord
+        # offset all x coordinate values by min x
+        for x_coord in self.grayscale_image_array[0]:
+            x_coord = x_coord - x_coord_min
+
+        # find min y coordinate value
+        y_coord_min = 100000
+        for y_coord in self.grayscale_image_array[1]:
+            if (y_coord < y_coord_min):
+                y_coord_min = y_coord
+        # offset all y coordinate values by min x
+        for y_coord in self.grayscale_image_array[1]:
+            y_coord = y_coord - y_coord_min
+
+        self.graphStuff()
+
 
         # save grayscale image array to training location
         os.makedirs("arraytraining", exist_ok=True)
@@ -121,6 +146,7 @@ class DesktopApp:
         self.gia_fig.savefig(training_saveloc)
         self.trainingFileCount = self.trainingFileCount + 1
 
+        # clear the image array for next gesture
         self.grayscale_image_array = []
         self.grayscale_image_array.append([])
         self.grayscale_image_array.append([])
