@@ -10,6 +10,7 @@ public class FingerPath {
     public Path path;
 
     public FingerPath(int color, int strokeWidth, Path path) {
+        System.out.println("FingerPath(color,strokeWidth,path)\n");
         this.color = color;
         this.strokeWidth = strokeWidth;
         this.path = path;
