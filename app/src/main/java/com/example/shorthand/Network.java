@@ -40,10 +40,14 @@ public class Network {
         new Thread(new SendData(x)).start();
     }
 
-    public void getResponseString(){
+    public void getResponseString() throws InterruptedException {
 
         System.out.println("getResponseString()\n");
-        new Thread(new GetData()).start();
+        Thread response;
+        response = new Thread(new GetData());
+        response.start();
+        response.join();
+        return;
     }
 
 
@@ -72,8 +76,8 @@ public class Network {
             try {
                 System.out.println("called getData");
                 Log.i("network", "called getData");
-                if (((response_string = input.readLine()) != null)){
-
+                if (((response_string = input.readLine()) == null)){
+                    response_string = "error";
                 }
 
                 System.out.println("Check point 1\n");
